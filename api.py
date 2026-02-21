@@ -5,7 +5,8 @@ FastAPI backend for ResearchSquad AI
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
+# Add this line with other imports
+from database import save_research, get_all_history, get_research_by_id
 from agents.researcher import ResearcherAgent
 from agents.analyst import AnalystAgent
 from agents.writer import WriterAgent
@@ -51,6 +52,8 @@ async def research(request: ResearchRequest):
     
     # Step 4: Edit
     final = editor.edit(draft, request.topic, request.content_type)
+        # Save to database
+    research_id = save_research(request.topic, request.content_type, final)
     
     return {
         "topic": request.topic,
@@ -65,5 +68,35 @@ async def research(request: ResearchRequest):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+@app.get("/history")
+async def history():
+    """Get all research history"""
+    items = get_all_history()
+    return {
+        "history": [
+            {
+                "id": item.id,
+                "topic": item.topic,
+                "content_type": item.content_type,
+                "created_at": item.created_at.strftime("%Y-%m-%d %H:%M")
+            }
+            for item in items
+        ]
+    }
+
+@app.get("/history/{research_id}")
+async def get_history_item(research_id: int):
+    """Get one research by ID"""
+    item = get_research_by_id(research_id)
+    if not item:
+        return {"error": "Not found"}
+    return {
+        "id": item.id,
+        "topic": item.topic,
+        "content_type": item.content_type,
+        "final_content": item.final_content,
+        "created_at": item.created_at.strftime("%Y-%m-%d %H:%M")
+    }
 
 # Run with: uvicorn api:app --reload --port 8000
