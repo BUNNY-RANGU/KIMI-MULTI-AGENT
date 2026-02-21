@@ -11,6 +11,17 @@ from agents.researcher import ResearcherAgent
 from agents.analyst import AnalystAgent
 from agents.writer import WriterAgent
 from agents.editor import EditorAgent
+from passlib.context import CryptContext
+from database import create_user, get_user_by_email
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password):
+    return pwd_context.hash(password)
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
 app = FastAPI(title="ResearchSquad AI API")
 
@@ -98,5 +109,24 @@ async def get_history_item(research_id: int):
         "final_content": item.final_content,
         "created_at": item.created_at.strftime("%Y-%m-%d %H:%M")
     }
+
+
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+@app.post("/signup")
+async def signup(email: str, password: str):
+    """Create new user"""
+    # Hash password
+    hashed = pwd_context.hash(password)
+    # Save to database
+    # Return success
+
+@app.post("/login")
+async def login(email: str, password: str):
+    """Login user"""
+    # Verify password
+    # Return token
 
 # Run with: uvicorn api:app --reload --port 8000
