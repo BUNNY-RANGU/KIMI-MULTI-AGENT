@@ -14,14 +14,15 @@ from agents.writer import WriterAgent
 from agents.editor import EditorAgent
 from database import create_user, get_user_by_email
 
-# Password hashing - Simple SHA256
-def hash_password(password: str) -> str:
-    """Simple SHA256 hash"""
-    return hashlib.sha256(password.encode()).hexdigest()
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify SHA256 hash"""
-    return hash_password(plain_password) == hashed_password
+
+
+
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from io import BytesIO
+from fastapi.responses import StreamingResponse
 
 app = FastAPI(title="ResearchSquad AI API")
 
@@ -33,6 +34,53 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/export/{research_id}")
+async def export_pdf(research_id: int):
+    """Export research to PDF"""
+    research = get_research_by_id(research_id)
+    
+    if not research:
+        return {"error": "Not found"}
+    
+    # Create PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    
+    # Build content
+    story = []
+    
+    # Title
+    story.append(Paragraph(f"Research: {research.topic}", styles['Title']))
+    story.append(Spacer(1, 12))
+    
+    # Meta
+    story.append(Paragraph(f"Type: {research.content_type}", styles['Normal']))
+    story.append(Paragraph(f"Date: {research.created_at}", styles['Normal']))
+    story.append(Spacer(1, 12))
+    
+    # Content
+    story.append(Paragraph(research.final_content.replace('\n', '<br/>'), styles['BodyText']))
+    
+    doc.build(story)
+    
+    buffer.seek(0)
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=research_{research_id}.pdf"}
+    )
+
+# Password hashing - Simple SHA256
+def hash_password(password: str) -> str:
+    """Simple SHA256 hash"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify SHA256 hash"""
+    return hash_password(plain_password) == hashed_password
 
 class ResearchRequest(BaseModel):
     topic: str

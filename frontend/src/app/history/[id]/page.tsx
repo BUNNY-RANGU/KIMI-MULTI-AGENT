@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, API_BASE_URL } from '@/lib/api';
 
 export default function ResearchDetail() {
   const params = useParams();
@@ -18,6 +18,26 @@ export default function ResearchDetail() {
       })
       .catch(() => setLoading(false));
   }, [params.id]);
+
+  async function handleDownload() {
+    try {
+      const url = `${API_BASE_URL}/export/${params.id}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Export failed: ${res.status}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `research_${params.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error('Download failed', err);
+      alert('Download failed. Check console for details.');
+    }
+  }
 
   if (loading) {
     return (
@@ -85,7 +105,17 @@ export default function ResearchDetail() {
             </div>
           </div>
         </div>
+
+        <div className="mt-6">
+          <button
+            onClick={handleDownload}
+            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
+          >
+            📄 Download PDF
+          </button>
+        </div>
       </div>
     </main>
   );
 }
+

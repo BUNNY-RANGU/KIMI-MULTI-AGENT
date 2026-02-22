@@ -18,8 +18,10 @@ export default function Login() {
     setError('');
 
     try {
-      const data = await apiRequest(`/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+      const data = await apiRequest('/login', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
       if (data.success) {

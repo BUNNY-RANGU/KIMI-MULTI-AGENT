@@ -3,14 +3,24 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            },
+        });
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
-        console.error('API request failed:', error);
+        console.error('API request failed:', {
+            url,
+            endpoint,
+            error: error instanceof Error ? error.message : String(error),
+        });
         throw error;
     }
 }

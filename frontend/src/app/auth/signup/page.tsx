@@ -20,8 +20,10 @@ export default function Signup() {
     setSuccess('');
 
     try {
-      const data = await apiRequest(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+      const data = await apiRequest('/signup', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
       if (data.success) {
