@@ -47,6 +47,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
+
+        <Link href="/settings" className="text-purple-600 hover:underline">⚙️ Settings</Link>
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800 mb-4">🚀 ResearchSquad AI</h1>
