@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+reportlab
+langchain_groq
+duckduckgo-search
+python-dotenv
+# Prevent Rust toolchain requirement on Netlify
+python-bidi==0.4.2

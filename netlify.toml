@@ -1,0 +1,16 @@
+[build]
+  # We are pinning python-bidi to <0.6.0 in requirements.txt to avoid Rust dependencies.
+  # This makes the build faster and more reliable.
+  command = "pip install -r requirements.txt && cd frontend && npm install && npm run build"
+  publish = "frontend/.next"
+
+[build.environment]
+  # Stable Python version for better pre-built wheel support
+  PYTHON_VERSION = "3.11"
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/api/*"
+  # IMPORTANT: Change this to your actual backend URL when deployed (e.g., to Render or a Netlify Function)
+  to = "http://localhost:8000/:splat"
+  status = 200
