@@ -1,0 +1,20 @@
+[build]
+  # Config for when Base Directory is set to "frontend" in Netlify UI
+  command = "npm install && npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/api/*"
+  # Replace with your real backend URL (e.g. from Render)
+  to = "https://your-backend-url.onrender.com/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  # Fallback to index.html for SPA-style client-side routing
+  to = "/index.html"
+  status = 200
+  force = false

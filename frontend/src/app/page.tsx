@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { apiRequest } from '@/lib/api';
 
 export default function Home() {
   const [topic, setTopic] = useState('');
@@ -17,19 +18,15 @@ export default function Home() {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:8000/research', {
+      const data = await apiRequest('/research', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic, content_type: contentType }),
       });
-
-      if (!response.ok) throw new Error('Research failed');
       
-      const data = await response.json();
       setResult(data);
       setStatus('done');
     } catch (err) {
-      setError('Failed to research');
+      setError('Failed to research. Check if backend is running.');
       setStatus('idle');
     }
   };
