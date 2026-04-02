@@ -84,14 +84,14 @@ export default function Home() {
               <select
                 value={contentType}
                 onChange={(e) => setContentType(e.target.value)}
-                className="w-full px-5 py-4 bg-background/50 border border-glass-border rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1em' }}
+                className="w-full px-5 py-4 bg-background border border-glass-border rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground appearance-none cursor-pointer"
+                style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1.2em' }}
                 disabled={status !== 'idle' && status !== 'done'}
               >
-                <option value="blog" className="bg-background text-foreground">Blog Post</option>
-                <option value="linkedin" className="bg-background text-foreground">LinkedIn Post</option>
-                <option value="report" className="bg-background text-foreground">Business Report</option>
-                <option value="thread" className="bg-background text-foreground">Twitter Thread</option>
+                <option value="blog" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">📰 Blog Post</option>
+                <option value="linkedin" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">🔗 LinkedIn Post</option>
+                <option value="report" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">📄 Business Report</option>
+                <option value="thread" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">🐦 Twitter Thread</option>
               </select>
             </div>
 
